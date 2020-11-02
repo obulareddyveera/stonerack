@@ -27,11 +27,11 @@ function App() {
 export default App;
 
 if (document.getElementById("app")) {
-    ReactDOM.render(<React.StrictMode>
+    ReactDOM.render(<React.Fragment>
         <Provider store={store}>
           <div className="container-fluid m-0 p-0" style={{ height: "100vh" }}>
             <PublicRoutes />
           </div>
         </Provider>
-      </React.StrictMode>, document.getElementById("app"));
+      </React.Fragment>, document.getElementById("app"));
 }

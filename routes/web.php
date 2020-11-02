@@ -14,10 +14,18 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
+    return view('welcome');
+});
+
+Route::get('/api/persons', function () {
+    return Response::json(array('name' => 'Steve', 'state' => 'CA'));
+});
+
+Route::get('/public', function () {
     return view('index');
 });
 
-Route::any('{all}', function () {
-    return redirect('/');
+Route::any('/public/{all}', function () {
+    return redirect('/public');
 })
 ->where(['all' => '.*']);

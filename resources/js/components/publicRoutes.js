@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter, Switch, Route } from "react-router-dom";
+import { Router, Switch, Route } from "react-router-dom";
 import { createBrowserHistory } from "history";
 
 import GoogleLogin from "./oauth/googleLogin";
@@ -9,12 +9,12 @@ const history = createBrowserHistory();
 export default class Routes extends React.Component {
   render() {
     return (
-      <BrowserRouter history={history}>
+      <Router history={history}>
         <Switch>
           <Route path="/public/oauth/gateway" component={GatewayService} />
           <Route path="/public" component={GoogleLogin} />
         </Switch>
-      </BrowserRouter>
+      </Router>
     );
   }
 }
