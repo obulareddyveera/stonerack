@@ -13,10 +13,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
+Route::get('/public', function () {
     return view('index');
 });
 
-Route::get('/public', function () {
-    return view('index');
+Route::get('/public/{any}/{all}', function () {
+    return redirect('public');
 });
