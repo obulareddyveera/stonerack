@@ -11,8 +11,8 @@ export default class Routes extends React.Component {
     return (
       <BrowserRouter history={history}>
         <Switch>
-          <Route path="/oauth/gateway" component={GatewayService} />
-          <Route path="/" component={GoogleLogin} />
+          <Route path="/public/oauth/gateway" component={GatewayService} />
+          <Route path="/public" component={GoogleLogin} />
         </Switch>
       </BrowserRouter>
     );

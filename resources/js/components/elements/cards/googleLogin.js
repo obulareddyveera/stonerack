@@ -11,7 +11,7 @@ const GoogleLoginCard = (props) => {
     if (googleAccessToken) {
       googleAccessToken = JSON.parse(googleAccessToken);
       if (googleAccessToken && googleAccessToken.accessToken) {
-        props.history.push("/oauth/gateway");
+        props.history.push("/public/oauth/gateway");
       }
     }
   });
@@ -20,7 +20,7 @@ const GoogleLoginCard = (props) => {
     console.log("--== response.accessToken", response);
     if (response.accessToken) {
       sessionStorage.setItem("GoogleAccessToken", JSON.stringify(response));
-      props.history.push("/oauth/gateway");
+      props.history.push("/public/oauth/gateway");
     }
   };
 
