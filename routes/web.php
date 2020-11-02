@@ -13,14 +13,11 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/{any}', function () {
+Route::get('/public', function () {
     return view('index');
 });
 
-Route::get('/public/{any}', function () {
-    return redirect('public');
-});
-
-Route::get('/public/oauth/{any}', function () {
-    return redirect('public');
-});
+Route::any('{all}', function () {
+    return redirect('/public');
+})
+->where(['all' => '.*']);
