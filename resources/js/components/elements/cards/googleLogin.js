@@ -17,7 +17,6 @@ const GoogleLoginCard = (props) => {
   });
 
   const login = (response) => {
-    console.log("--== response.accessToken", response);
     if (response.accessToken) {
       sessionStorage.setItem("GoogleAccessToken", JSON.stringify(response));
       props.history.push("/public/oauth/gateway");
@@ -29,7 +28,7 @@ const GoogleLoginCard = (props) => {
   };
 
   return (
-    <div className="card">
+    <div className="card col-6">
       <div className="card-header bg-primary">
         <LoginDisplay />
       </div>
@@ -38,7 +37,7 @@ const GoogleLoginCard = (props) => {
           <div className="d-flex justify-content-around">
             <div>
               <p>
-                Stone-Shelf is a flexible system built exclusively for marble,
+                StoneRack is a flexible system built exclusively for marble,
                 tiles and granite sales showroom. The application is designed
                 for Indian industry. This software helps with services like
                 inventory management, billing and helps sales team with 3D

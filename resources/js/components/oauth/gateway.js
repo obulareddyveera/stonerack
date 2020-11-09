@@ -1,195 +1,182 @@
 import React from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Formik } from "formik";
+import { InputField, CheckboxField, TextareaField } from "./../elements/fields";
+import {
+    addStaffAsync,
+    oauthSelector,
+    doAuthorizationCheck
+} from "./oauthSlice";
+
 import HNav from "./../elements/navbars/hNav";
 
-const GateWay = (props) => {
-  const [profile, setProfile] = React.useState();
-  React.useEffect(() => {
-    let googleAccessToken = sessionStorage.getItem("GoogleAccessToken");
-    if (googleAccessToken) {
-      googleAccessToken = JSON.parse(googleAccessToken);
-      console.log("--== googleAccessToken ", googleAccessToken);
-      const { profileObj } = googleAccessToken;
-      setProfile(profileObj);
+const formValidation = values => {
+    const errors = {};
+    if (!values.phone) {
+        errors.phone = "Required";
+    } else if (!/^[789][0-9]{9}$/i.test(values.phone)) {
+        errors.phone = "Invalid Mobile Number";
     }
-  }, []);
 
-  console.log("--== profile ", profile);
+    if (values.isNewOrgRequest) {
+        if (!values.orgName) {
+            errors.orgName = "Required";
+        }
+        if (!values.orgAddress) {
+            errors.orgAddress = "Required";
+        }
+    } else {
+        if (!values.code) {
+            errors.code =
+                "Provide Organization Code, to enroll as employee or create your a new organization as an admin";
+        }
+    }
 
-  return (
-    <React.Fragment>
-      <HNav displaySidebar={"block"} {...props} />
-      <main>
-        <div className="container-fluid" style={{ height: "100vh" }}>
-          {profile && (
-            <div className="d-flex justify-content-center align-items-center h-100">
-              <div className="row col-12">
-                <div className="col-sm-10 offset-md-2 col-md-8">
-                  <div className="card">
-                    <div className="card-body">
-                      <Formik
-                        initialValues={{
-                          ...profile,
-                          mobileNumber: "8105555322",
-                          orgCode: "115133619703025886313001",
-                          isNewOrgRequest: false,
-                        }}
-                        validate={(values) => {
-                          const errors = {};
-                          if (!values.mobileNumber) {
-                            errors.mobileNumber = "Required";
-                          } else if (
-                            !/^[789][0-9]{9}$/i.test(values.mobileNumber)
-                          ) {
-                            errors.mobileNumber = "Invalid Mobile Number";
-                          }
+    return errors;
+};
 
-                          if (!values.orgCode && !values.isNewOrgRequest) {
-                            errors.orgCode =
-                              "Provide Organization Code, to enroll as employee or create your a new organization as an admin";
-                          } else if (values.orgCode && values.isNewOrgRequest) {
-                            errors.orgCode =
-                              "Provide Organization Code, to enroll as employee or create your a new organization as an admin";
-                          }
+const GateWay = props => {
+    const dispatch = useDispatch();
+    const oauth = useSelector(oauthSelector);
 
-                          return errors;
-                        }}
-                        onSubmit={(values, { setSubmitting }) => {
-                          props.history.push("/features/dashboard/home");
-                        }}
-                      >
-                        {({
-                          values,
-                          errors,
-                          touched,
-                          handleChange,
-                          handleBlur,
-                          handleSubmit,
-                          isSubmitting,
-                        }) => (
-                          <form onSubmit={handleSubmit}>
-                            <div className="row">
-                              <div className="form-group col-sm-12 col-md-6">
-                                <label htmlFor="givenName">Given Name</label>
-                                <input
-                                  type="text"
-                                  className="form-control"
-                                  id="givenName"
-                                  name="givenName"
-                                  onChange={handleChange}
-                                  onBlur={handleBlur}
-                                  value={values.givenName}
-                                  disabled
-                                />
-                              </div>
-                              <div className="form-group col-sm-12 col-md-6">
-                                <label htmlFor="familyName">Family Name</label>
-                                <input
-                                  type="text"
-                                  className="form-control"
-                                  id="familyName"
-                                  name="familyName"
-                                  onChange={handleChange}
-                                  onBlur={handleBlur}
-                                  value={values.familyName}
-                                  disabled
-                                />
-                              </div>
-                              <div className="form-group col-sm-12 col-md-6">
-                                <label htmlFor="email">Email</label>
-                                <input
-                                  type="text"
-                                  className="form-control"
-                                  id="email"
-                                  name="email"
-                                  onChange={handleChange}
-                                  onBlur={handleBlur}
-                                  value={values.email}
-                                  disabled
-                                />
-                              </div>
-                              <div className="form-group col-sm-12 col-md-6">
-                                <label htmlFor="mobileNumber">Mobile</label>
-                                <input
-                                  type="text"
-                                  className="form-control"
-                                  id="mobileNumber"
-                                  placeholder="Mobile Number"
-                                  name="mobileNumber"
-                                  onChange={handleChange}
-                                  onBlur={handleBlur}
-                                  value={values.mobileNumber}
-                                />
-                                <span className="text-danger">
-                                  {errors.mobileNumber &&
-                                    touched.mobileNumber &&
-                                    errors.mobileNumber}
-                                </span>
-                              </div>
-                              <div className="col-sm-12 col-md-12">
-                                <hr />
-                                <div className="form-group">
-                                  <label htmlFor="orgCode">
-                                    Organization Code
-                                  </label>
-                                  <input
-                                    type="text"
-                                    className="form-control"
-                                    id="orgCode"
-                                    placeholder="Organization Code"
-                                    name="orgCode"
-                                    onChange={handleChange}
-                                    onBlur={handleBlur}
-                                    value={values.orgCode}
-                                  />
-                                </div>
-                                <div className="form-check">
-                                  <input
-                                    className="form-check-input"
-                                    type="checkbox"
-                                    id="isNewOrgRequest"
-                                    name="isNewOrgRequest"
-                                    onChange={handleChange}
-                                    onBlur={handleBlur}
-                                    value={values.isNewOrgRequest}
-                                  />
-                                  <label
-                                    className="form-check-label"
-                                    htmlFor="isNewOrgRequest"
-                                  >
-                                    Request for New Organization Registration
-                                  </label>
-                                </div>
-                                <span className="text-danger">
-                                  {errors.orgCode &&
-                                    touched.orgCode &&
-                                    errors.orgCode}
-                                </span>
-                              </div>
-                            </div>
-                            <div className="d-flex justify-content-end">
-                              <button
-                                className="btn btn-primary"
-                                disabled={
-                                  isSubmitting || Object.keys(errors).length > 0
-                                }
-                              >
-                                Submit
-                              </button>
-                            </div>
-                          </form>
-                        )}
-                      </Formik>
+    const { profile } = oauth;
+    React.useEffect(() => {
+        let googleAccessToken = sessionStorage.getItem("GoogleAccessToken");
+        if (googleAccessToken) {
+            googleAccessToken = JSON.parse(googleAccessToken);
+            const { profileObj } = googleAccessToken;
+            dispatch(doAuthorizationCheck(profileObj));
+        }
+    }, []);
+
+    React.useEffect(() => {
+        if (profile) {
+            if (profile.code && !profile.isActiveOrg) {
+                props.history.push({
+                    pathname: "/features/dashboard/app",
+                    state: { profile }
+                });
+            } else if (profile.code && profile.isActiveOrg) {
+                props.history.push({
+                    pathname: "/features/dashboard/org",
+                    state: { profile }
+                });
+            }
+        }
+    }, [profile]);
+
+    const onHandleSubmit = params => {
+        dispatch(addStaffAsync(params));
+    };
+
+    const getDisableState = (errors, touched) => {
+        if (Object.keys(errors).length > 0) {
+            return true;
+        } else if (Object.keys(touched).length === 0) {
+            return true;
+        }
+
+        return false;
+    };
+
+    console.log("--== profile ", profile);
+
+    return (
+        <React.Fragment>
+            <HNav displaySidebar={"block"} {...props} />
+            <div className="container-fluid mt-5">
+                <div className="row">
+                    <div className="col-12 mt-5">
+                        <Formik
+                            initialValues={{
+                                ...profile
+                            }}
+                            validate={formValidation}
+                        >
+                            {({ values, errors, touched }) => {
+                                return (
+                                    <form>
+                                        <div className="card">
+                                            <div className="card-body">
+                                                <div className="row">
+                                                    <InputField
+                                                        className="col-sm-12 col-md-6"
+                                                        name="name"
+                                                        displayName="Name"
+                                                        disabled
+                                                    />
+                                                    <InputField
+                                                        className="col-sm-12 col-md-6"
+                                                        name="familyName"
+                                                        displayName="Family Name"
+                                                        disabled
+                                                    />
+                                                </div>
+                                                <div className="row">
+                                                    <InputField
+                                                        className="col-sm-12 col-md-6"
+                                                        name="email"
+                                                        displayName="Email"
+                                                        disabled
+                                                    />
+                                                    <InputField
+                                                        className="col-sm-12 col-md-6"
+                                                        name="phone"
+                                                        displayName="Mobile"
+                                                    />
+                                                </div>
+                                                <CheckboxField
+                                                    className="col-12 mt-3 m-1"
+                                                    name="isNewOrgRequest"
+                                                    type="checkbox"
+                                                    displayName="Request for New Organization Registration"
+                                                />
+                                                {values.isNewOrgRequest ? (
+                                                    <React.Fragment>
+                                                        <InputField
+                                                            className="col-12  m-1"
+                                                            name="orgName"
+                                                            displayName="Organization Name"
+                                                        />
+                                                        <TextareaField
+                                                            className="col-12  m-1"
+                                                            name="orgAddress"
+                                                            displayName="Address"
+                                                        />
+                                                    </React.Fragment>
+                                                ) : (
+                                                    <InputField
+                                                        className="col-12  m-1"
+                                                        name="code"
+                                                        displayName="Organization Code"
+                                                    />
+                                                )}
+                                            </div>
+                                            <div className="card-footer d-flex justify-content-end">
+                                                <button
+                                                    type="button"
+                                                    className="btn btn-primary"
+                                                    disabled={getDisableState(
+                                                        errors,
+                                                        touched
+                                                    )}
+                                                    onClick={() =>
+                                                        onHandleSubmit(values)
+                                                    }
+                                                >
+                                                    Submit
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                );
+                            }}
+                        </Formik>
                     </div>
-                  </div>
                 </div>
-              </div>
             </div>
-          )}
-        </div>
-      </main>
-    </React.Fragment>
-  );
+        </React.Fragment>
+    );
 };
 
 export default GateWay;

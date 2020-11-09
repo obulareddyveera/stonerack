@@ -13,9 +13,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/api/persons', function () {
-    return Response::json(array('name' => 'Steve', 'state' => 'CA'));
-});
+
+
 
 Route::get('/', function () {
     return view('index');

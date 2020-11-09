@@ -17,3 +17,9 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+Route::prefix('/srsl')->group(function() {
+    Route::get('/staff', 'App\Http\Controllers\StaffController@index')->name('index');
+    Route::get('/staff/{googleId}', 'App\Http\Controllers\StaffController@findByGoogleId')->name('findByGoogleId');
+    Route::post('/staff', 'App\Http\Controllers\StaffController@store')->name('store');
+});
