@@ -31,9 +31,18 @@ export const oauthSlice = createSlice({
 
 export const { addStaff, authorizationCheck, getAllStaff } = oauthSlice.actions;
 
+const getUrl = (url) => {
+    const { location } = window;
+    if (location && location.hostname === 'localhost') {
+        return `/${url}`;
+    } else {
+        return `/public/${url}`;
+    }
+}
+
 export const doAuthorizationCheck = profile => async dispatch => {
     const { googleId } = profile;
-    fetch(`/api/srsl/staff/${googleId}`, {
+    fetch(getUrl(`api/srsl/staff/${googleId}`), {
         method: "get"
     })
         .then(response => {
@@ -52,7 +61,7 @@ export const doAuthorizationCheck = profile => async dispatch => {
 };
 
 export const addStaffAsync = params => async dispatch => {
-    fetch("/api/srsl/staff", {
+    fetch(getUrl("api/srsl/staff"), {
         headers: {
             "Content-Type": "application/json",
             Accept: "application/json, text-plain, */*",

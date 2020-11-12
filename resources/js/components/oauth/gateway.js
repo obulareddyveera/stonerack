@@ -80,7 +80,6 @@ const GateWay = props => {
     };
 
     console.log("--== profile ", profile);
-
     return (
         <React.Fragment>
             <HNav displaySidebar={"block"} {...props} />
