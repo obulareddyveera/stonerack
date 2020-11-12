@@ -124,7 +124,18 @@ class StaffController extends Controller
         }
 
         Log::info('New Staff Member Saved Successfully!!');
-        return Staff::all();
+        $googleId = $request->googleId;
+        $query = DB::table('org_staff')
+            ->join('staff', function($join) use($googleId){
+                $join->on('staff.id', '=', 'org_staff.staff_id')
+                     ->where('staff.google_id', '=', $googleId);
+            })
+            ->join('orgs', 'orgs.id', '=', 'org_staff.orgs_id')
+            ->select('staff.*', 'staff.is_active as isActiveStaff', 'orgs.name as orgName', 'orgs.address as orgAddress', 'orgs.code', 'orgs.is_active as isActiveOrg')
+            ->get();
+
+        
+        return response()->json($query[0], 200);
     }
 
     /**

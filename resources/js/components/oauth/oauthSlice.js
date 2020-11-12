@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { param } from "jquery";
 
 export const oauthSlice = createSlice({
     name: "oauth",
@@ -9,8 +10,9 @@ export const oauthSlice = createSlice({
     reducers: {
         addStaff: (state, action) => {
             return {
-                ...state,
-                ...action.payload
+                statusCode: 1,
+                date: new Date().getTime(),
+                profile: action.payload
             };
         },
         authorizationCheck: (state, action) => {
@@ -31,14 +33,14 @@ export const oauthSlice = createSlice({
 
 export const { addStaff, authorizationCheck, getAllStaff } = oauthSlice.actions;
 
-const getUrl = (url) => {
+const getUrl = url => {
     const { location } = window;
-    if (location && location.hostname === 'localhost') {
+    if (location && location.hostname === "localhost") {
         return `/${url}`;
     } else {
         return `/public/${url}`;
     }
-}
+};
 
 export const doAuthorizationCheck = profile => async dispatch => {
     const { googleId } = profile;
@@ -49,9 +51,9 @@ export const doAuthorizationCheck = profile => async dispatch => {
             return response.json();
         })
         .then(data => {
-            let response = {...profile}
+            let response = { ...profile };
             if (data) {
-                response = {...response, ...data};
+                response = { ...response, ...data };
             }
             dispatch(authorizationCheck({ profile: response }));
         })
@@ -71,7 +73,12 @@ export const addStaffAsync = params => async dispatch => {
         credentials: "same-origin",
         body: JSON.stringify(params)
     })
+        .then(response => {
+            return response.json();
+        })
         .then(data => {
+            debugger;
+            console.log("--== addStaffAsync ", data);
             dispatch(addStaff(data));
         })
         .catch(function(error) {
